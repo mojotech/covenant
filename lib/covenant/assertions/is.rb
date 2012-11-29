@@ -6,10 +6,10 @@ module Covenant
         query = "#{strip}?"
         argl  = args.map(&:inspect).join(", ")
 
-        if condition.respond_to?(query)
-          test condition.send(query, *args),
-               "#{condition.inspect} must be #{strip} #{argl}",
-               "#{condition.inspect} must not be #{strip} #{argl}"
+        if target.respond_to?(query)
+          test target.send(query, *args),
+               "#{target.inspect} must be #{strip} #{argl}",
+               "#{target.inspect} must not be #{strip} #{argl}"
         else
           super
         end

@@ -13,28 +13,28 @@ module Covenant
   end
 
   module DSL
-    # Ensures that condition evaluates to a true value.
+    # Ensures that the condition on target evaluates to a true value.
     #
     # @api public
     #
-    # @param condition the condition to test
+    # @param target the target on which to test the condition
     # @param [#to_s] message the message that will be set if the test fails
     #
     # @return the wrapper object you can use to test your assertions
-    def assert(condition, message = nil)
-      Covenant::Assertion.new(condition, message)
+    def assert(target, message = nil)
+      Covenant::Assertion.new(target, message)
     end
 
-    # Ensures that condition evaluates to a false value.
+    # Ensures that the condition on target evaluates to a false value.
     #
     # @api public
     #
-    # @param condition the condition to test
+    # @param target the target on which to test the condition
     # @param message the message that will be set if the test fails
     #
     # @return the wrapper object you can use to test your assertions
-    def deny(condition, message = nil)
-      Covenant::Denial.new(condition, message)
+    def deny(target, message = nil)
+      Covenant::Denial.new(target, message)
     end
   end
 
@@ -43,14 +43,14 @@ module Covenant
   class Statement
     include Assertions
 
-    def initialize(condition, message)
-      @condition = condition
+    def initialize(target, message)
+      @target = target
       @message   = message
     end
 
     protected
 
-    attr_reader :condition, :message
+    attr_reader :target, :message
 
     def raise_error(message)
       raise AssertionFailed, self.message || message

@@ -5,9 +5,9 @@ module Covenant
         type.is_a?(Class) or
          raise ArgumentError, "#{type.inspect} must be a Class"
 
-        test condition.is_a?(type),
-             "#{condition.inspect} must be a #{type.name}",
-             "#{condition.inspect} must not be a #{type.name}"
+        test target.is_a?(type),
+             "#{target.inspect} must be a #{type.name}",
+             "#{target.inspect} must not be a #{type.name}"
       end
 
       alias_method :is_an, :is_a
