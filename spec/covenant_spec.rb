@@ -1,4 +1,4 @@
-require_relative '../lib/covenant'
+require 'spec_helper'
 
 describe Covenant do
   describe Covenant::DSL do
