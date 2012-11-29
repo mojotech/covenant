@@ -62,3 +62,10 @@ that message will be used by the exception instead:
 
 The wrapper object returned by `assert` overrides `!=`, so you'll need a Ruby
 1.9 compatible implementation.
+
+## TODO
+
+* Operator assertions (==, !=, >, <, etc)
+* Speed up
+* DRY
+* Document
