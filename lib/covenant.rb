@@ -1,4 +1,5 @@
 require 'covenant/assertions/is_a'
+require 'covenant/assertions/is'
 
 module Covenant
   # Adds the Covenant DSL to base.
