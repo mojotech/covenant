@@ -9,7 +9,12 @@ module Covenant
   #
   # @param base where to add the Covenant DSL
   def self.abide(base = Object)
-    base.send :include, Covenant::DSL
+    case base
+    when Class
+      base.send :include, Covenant::DSL
+    else
+      base.extend Covenant::DSL
+    end
   end
 
   module DSL
