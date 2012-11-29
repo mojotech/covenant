@@ -21,7 +21,7 @@ module Covenant
     # @param [#to_s] message the message that will be set if the test fails
     #
     # @return the wrapper object you can use to test your assertions
-    def assert(target, message = nil)
+    def assert(target = self, message = nil)
       Covenant::Assertion.new(target, message)
     end
 
@@ -33,7 +33,7 @@ module Covenant
     # @param message the message that will be set if the test fails
     #
     # @return the wrapper object you can use to test your assertions
-    def deny(target, message = nil)
+    def deny(target = self, message = nil)
       Covenant::Denial.new(target, message)
     end
   end
