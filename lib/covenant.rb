@@ -53,14 +53,20 @@ module Covenant
     attr_reader :target, :message
 
     def raise_error(message)
-      raise AssertionFailed, self.message || message
+      msg = self.message || message
+
+      if msg
+        raise AssertionFailed, msg
+      else
+        raise AssertionFailed
+      end
     end
   end
 
   class Assertion < Statement
     private
 
-    def test(condition, message, _)
+    def test(condition, message = nil, _ = nil)
       if condition
         target
       else
@@ -72,7 +78,7 @@ module Covenant
   class Denial < Statement
     private
 
-    def test(condition, _, message)
+    def test(condition, _ = nil, message = nil)
       if ! condition
         target
       else
