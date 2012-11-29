@@ -61,7 +61,11 @@ module Covenant
     private
 
     def test(condition, message, _)
-      condition or raise_error(message)
+      if condition
+        target
+      else
+        raise_error message
+      end
     end
   end
 
@@ -69,7 +73,11 @@ module Covenant
     private
 
     def test(condition, _, message)
-      ! condition or raise_error(message)
+      if ! condition
+        target
+      else
+        raise_error message
+      end
     end
   end
 end
