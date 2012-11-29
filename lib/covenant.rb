@@ -27,7 +27,11 @@ module Covenant
     #
     # @return the wrapper object you can use to test your assertions
     def assert(target = self, message = nil)
-      Covenant::Assertion.new(target, message)
+      if block_given?
+        Covenant::Assertion.new(target, message).test(yield target)
+      else
+        Covenant::Assertion.new(target, message)
+      end
     end
 
     # Ensures that the condition on target evaluates to a false value.
@@ -39,7 +43,11 @@ module Covenant
     #
     # @return the wrapper object you can use to test your assertions
     def deny(target = self, message = nil)
-      Covenant::Denial.new(target, message)
+      if block_given?
+        Covenant::Denial.new(target, message).test(yield target)
+      else
+        Covenant::Denial.new(target, message)
+      end
     end
   end
 
@@ -69,8 +77,6 @@ module Covenant
   end
 
   class Assertion < Statement
-    private
-
     def test(condition, message = nil, _ = nil)
       if condition
         target
@@ -81,8 +87,6 @@ module Covenant
   end
 
   class Denial < Statement
-    private
-
     def test(condition, _ = nil, message = nil)
       if ! condition
         target
