@@ -1,3 +1,5 @@
+require 'covenant/assertions/is_a'
+
 module Covenant
   # Adds the Covenant DSL to base.
   #
@@ -34,9 +36,6 @@ module Covenant
     end
   end
 
-  module Assertions
-  end
-
   class AssertionFailed < Exception; end
 
   class Statement
@@ -46,11 +45,29 @@ module Covenant
       @condition = condition
       @message   = message
     end
+
+    protected
+
+    attr_reader :condition, :message
+
+    def raise_error(message)
+      raise AssertionFailed, self.message || message
+    end
   end
 
   class Assertion < Statement
+    private
+
+    def test(condition, message, _)
+      condition or raise_error(message)
+    end
   end
 
   class Denial < Statement
+    private
+
+    def test(condition, _, message)
+      ! condition or raise_error(message)
+    end
   end
 end
