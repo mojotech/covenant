@@ -15,4 +15,6 @@ Gem::Specification.new do |s|
   s.platform      = Gem::Platform::RUBY
   s.require_paths = ['lib']
   s.rubyforge_project = '[none]'
+
+  s.add_development_dependency 'rspec', '>= 2.11'
 end
