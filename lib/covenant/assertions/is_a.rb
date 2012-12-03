@@ -3,7 +3,7 @@ module Covenant
     module IsA
       def is_a(type)
         type.is_a?(Class) or
-         raise ArgumentError, "#{type.inspect} must be a Class"
+         ::Kernel.raise ArgumentError, "#{type.inspect} must be a Class"
 
         test target.is_a?(type),
              "#{target.inspect} must be a #{type.name}",

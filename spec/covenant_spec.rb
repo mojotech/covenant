@@ -5,12 +5,6 @@ describe Covenant do
     include Covenant::DSL
 
     describe "#assert" do
-      context "with wrapper" do
-        subject { assert(:something) }
-
-        it { should be_a(Covenant::Assertion) }
-      end
-
       context "with block" do
         it "passes if the block expression evaluates to true" do
           expect { assert { true } }.not_to raise_error
@@ -33,12 +27,6 @@ describe Covenant do
     end
 
     describe "#deny" do
-      context "with wrapper" do
-        subject { deny(:something) }
-
-        it { should be_a(Covenant::Denial) }
-      end
-
       context "with block" do
         it "passes if the block expression evaluates to false" do
           expect { deny { false } }.not_to raise_error

@@ -52,7 +52,7 @@ module Covenant
 
   class AssertionFailed < Exception; end
 
-  class Statement
+  class Statement < BasicObject
     include Assertions
 
     def initialize(target, message)
@@ -68,9 +68,9 @@ module Covenant
       msg = self.message || message
 
       if msg
-        raise AssertionFailed, msg
+        ::Kernel.raise AssertionFailed, msg
       else
-        raise AssertionFailed
+        ::Kernel.raise AssertionFailed
       end
     end
   end
