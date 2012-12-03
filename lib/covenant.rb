@@ -61,6 +61,12 @@ module Covenant
            "#{target.inspect} must != #{other.inspect}")
     end
 
+    def !=(other)
+      test(target != other,
+           "#{target.inspect} must != #{other.inspect}",
+           "#{target.inspect} must == #{other.inspect}")
+    end
+
     def method_missing(name, *args)
       query    = "#{name}?"
       argl     = args.map(&:inspect).join(", ")

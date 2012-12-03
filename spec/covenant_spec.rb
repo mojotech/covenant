@@ -59,6 +59,10 @@ describe Covenant do
         expect { assertion == 'hi' }.not_to raise_error
       end
 
+      it "passes if the receiver answers != with a true value" do
+        expect { assertion != 'yo' }.not_to raise_error
+      end
+
       it "passes if the receiver answers the query with a true value" do
         expect { assertion.start_with('h') }.not_to raise_error
       end
@@ -70,6 +74,11 @@ describe Covenant do
       it "fails if the receiver answers == with a false value" do
         expect { assertion == 'yo' }.
          to raise_error(Covenant::AssertionFailed, /must == "yo"/)
+      end
+
+      it "fails if the receiver answers != with a false value" do
+        expect { assertion != 'hi' }.
+         to raise_error(Covenant::AssertionFailed, /must != "hi"/)
       end
 
       it "fails if the receiver answers the query with a false value" do
