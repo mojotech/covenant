@@ -68,8 +68,15 @@ module Covenant
     end
 
     def method_missing(name, *args)
-      query    = "#{name}?"
-      argl     = args.map(&:inspect).join(", ")
+      argl = args.map(&:inspect).join(", ")
+
+      if target.respond_to?(name)
+        return test(target.send(name, *args),
+                    "#{target.inspect} must #{name} #{argl}",
+                    "#{target.inspect} must not #{name} #{argl}")
+      end
+
+      query = "#{name}?"
 
       if target.respond_to?(query)
         return test(target.send(query, *args),

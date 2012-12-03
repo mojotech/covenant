@@ -55,6 +55,10 @@ describe Covenant do
     describe 'assertion' do
       subject(:assertion) { assert('hi') }
 
+      it "passes if the receiver answers the bare query with a true value" do
+        expect { assertion =~ /hi/ }.not_to raise_error
+      end
+
       it "passes if the receiver answers == with a true value" do
         expect { assertion == 'hi' }.not_to raise_error
       end
@@ -69,6 +73,11 @@ describe Covenant do
 
       it "passes if the receiver answers the 'is' query with a true value" do
         expect { assertion.is_ascii_only }.not_to raise_error
+      end
+
+      it "fails if the receiver answers the bare query with a false value" do
+        expect { assertion =~ /yo/ }.
+         to raise_error(Covenant::AssertionFailed, %r{must =~ /yo/})
       end
 
       it "fails if the receiver answers == with a false value" do
@@ -95,6 +104,11 @@ describe Covenant do
     describe 'denial' do
       subject(:denial) { deny('hi') }
 
+      it "passes if the receiver answers the bare query with a false value" do
+        expect { denial =~ /yo/ }.
+         not_to raise_error(Covenant::AssertionFailed)
+      end
+
       it "passes if the answers == with a false value" do
         expect { denial == 'yo' }.
          not_to raise_error(Covenant::AssertionFailed)
@@ -108,6 +122,11 @@ describe Covenant do
       it "passes if the answers the 'is' query with a false value" do
         expect { denial.is_empty }.
          not_to raise_error(Covenant::AssertionFailed)
+      end
+
+      it "fails if the receiver answers the bare query with a true value" do
+        expect { denial =~ /hi/ }.
+         to raise_error(Covenant::AssertionFailed, %r{must not =~ /hi/})
       end
 
       it "fails if the receiver answers == with a true value" do
