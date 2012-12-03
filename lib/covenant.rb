@@ -30,6 +30,8 @@ module Covenant
       end
     end
 
+    alias_method :asserting, :assert
+
     # Ensures that the condition on target evaluates to a false value.
     #
     # @api public
@@ -45,6 +47,8 @@ module Covenant
         Covenant::Denial.new(target, message)
       end
     end
+
+    alias_method :denying, :deny
   end
 
   class AssertionFailed < Exception; end
