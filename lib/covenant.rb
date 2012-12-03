@@ -1,5 +1,4 @@
 require 'covenant/assertions/is_a'
-require 'covenant/assertions/is'
 require 'covenant/assertions/query'
 
 module Covenant
