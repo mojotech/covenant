@@ -153,3 +153,16 @@ module Covenant
     end
   end
 end
+
+=begin
+
+require 'benchmark'
+
+Covenant.abide self
+
+Benchmark.bm do |x|
+  x.report { 1_000_000.times { assert('aaa').start_with 'a' } }
+  x.report { 1_000_000.times { 'aaa'.start_with? 'a' } }
+end
+
+=end
