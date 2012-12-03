@@ -3,7 +3,7 @@
 Covenant is an assertion library for Ruby, designed to be used in your
 production code.
 
-It adds two methods to `Object`: `assert` and `deny`.
+It adds 4 methods to `Object`: `assert`, `asserting`, `deny` and `denying`.
 
 ## Usage
 
@@ -23,12 +23,16 @@ the object you want to check:
     assert(obj) > 1
     assert(obj) <= 1
 
-[TODO: Link to `Covenant::Assertions` for a list of available methods.]
-
 `assert` returns its receiver, so you can use it with a method's return value:
 
     obj.assert > 1          #=> obj
     obj.assert.is_a(String) #=> obj
+
+In this case, you'll probably want to use `asserting` as it reads slightly
+better:
+
+    obj.asserting > 1          #=> obj
+    obj.asserting.is_a(String) #=> obj
 
 You can also use a block form. `assert` will optionally yield its receiver to
 the block.
@@ -54,10 +58,6 @@ that message will be used by the exception instead:
 
     assert(1, "1 != 0!") == 0 # Covenant::AssertionFailed: 1 != 0!
 
-## Extending
-
-[TODO]
-
 ## Supported Ruby versions
 
 The wrapper object returned by `assert` overrides `!=`, so you'll need a Ruby
@@ -65,7 +65,5 @@ The wrapper object returned by `assert` overrides `!=`, so you'll need a Ruby
 
 ## TODO
 
-* Operator assertions (==, !=, >, <, etc)
 * Speed up
-* DRY
 * Document
