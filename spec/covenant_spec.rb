@@ -76,28 +76,24 @@ describe Covenant do
       end
 
       it "fails if the receiver answers the bare query with a false value" do
-        expect { assertion =~ /yo/ }.
-         to raise_error(Covenant::AssertionFailed, %r{must =~ /yo/})
+        expect { assertion =~ /yo/ }.to raise_error(Covenant::AssertionFailed)
       end
 
       it "fails if the receiver answers == with a false value" do
-        expect { assertion == 'yo' }.
-         to raise_error(Covenant::AssertionFailed, /must == "yo"/)
+        expect { assertion == 'yo' }.to raise_error(Covenant::AssertionFailed)
       end
 
       it "fails if the receiver answers != with a false value" do
-        expect { assertion != 'hi' }.
-         to raise_error(Covenant::AssertionFailed, /must != "hi"/)
+        expect { assertion != 'hi' }.to raise_error(Covenant::AssertionFailed)
       end
 
       it "fails if the receiver answers the query with a false value" do
         expect { assertion.end_with('a') }.
-         to raise_error(Covenant::AssertionFailed, /must end_with "a"/)
+         to raise_error(Covenant::AssertionFailed)
       end
 
       it "fails if the receiver answers the 'is' query with a false value" do
-        expect { assertion.is_empty }.
-         to raise_error(Covenant::AssertionFailed, /must be empty/)
+        expect { assertion.is_empty }.to raise_error(Covenant::AssertionFailed)
       end
     end
 
@@ -110,8 +106,7 @@ describe Covenant do
       end
 
       it "passes if the answers == with a false value" do
-        expect { denial == 'yo' }.
-         not_to raise_error(Covenant::AssertionFailed)
+        expect { denial == 'yo' }.not_to raise_error(Covenant::AssertionFailed)
       end
 
       it "passes if the answers the query with a false value" do
@@ -120,28 +115,25 @@ describe Covenant do
       end
 
       it "passes if the answers the 'is' query with a false value" do
-        expect { denial.is_empty }.
-         not_to raise_error(Covenant::AssertionFailed)
+        expect { denial.is_empty }.not_to raise_error(Covenant::AssertionFailed)
       end
 
       it "fails if the receiver answers the bare query with a true value" do
-        expect { denial =~ /hi/ }.
-         to raise_error(Covenant::AssertionFailed, %r{must not =~ /hi/})
+        expect { denial =~ /hi/ }.to raise_error(Covenant::AssertionFailed)
       end
 
       it "fails if the receiver answers == with a true value" do
-        expect { denial == 'hi' }.
-         to raise_error(Covenant::AssertionFailed, /must != "hi"/)
+        expect { denial == 'hi' }.to raise_error(Covenant::AssertionFailed)
       end
 
       it "fails if the receiver answers the query with a true value" do
         expect { denial.end_with('i') }.
-         to raise_error(Covenant::AssertionFailed, /must not end_with "i"/)
+         to raise_error(Covenant::AssertionFailed)
       end
 
       it "fails if the receiver answers the 'is' query with a true value" do
         expect { denial.is_ascii_only }.
-         to raise_error(Covenant::AssertionFailed, /must not be ascii_only/)
+         to raise_error(Covenant::AssertionFailed)
       end
     end
   end

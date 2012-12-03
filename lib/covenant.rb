@@ -51,37 +51,29 @@ module Covenant
 
   class Statement < BasicObject
     def initialize(target, message)
-      @target = target
-      @message   = message
+      @target  = target
+      @message = message
     end
 
     def ==(other)
-      test(target == other,
-           "#{target.inspect} must == #{other.inspect}",
-           "#{target.inspect} must != #{other.inspect}")
+      test(target == other, ErrorMessage.new(target, :==, [other]))
     end
 
     def !=(other)
-      test(target != other,
-           "#{target.inspect} must != #{other.inspect}",
-           "#{target.inspect} must == #{other.inspect}")
+      test(target != other, ErrorMessage.new(target, :!=, [other]))
     end
 
     def method_missing(name, *args)
-      argl = args.map(&:inspect).join(", ")
-
       if target.respond_to?(name)
         return test(target.send(name, *args),
-                    "#{target.inspect} must #{name} #{argl}",
-                    "#{target.inspect} must not #{name} #{argl}")
+                    ErrorMessage.new(target, name, args))
       end
 
       query = "#{name}?"
 
       if target.respond_to?(query)
         return test(target.send(query, *args),
-                    "#{target.inspect} must #{name} #{argl}",
-                    "#{target.inspect} must not #{name} #{argl}")
+                    ErrorMessage.new(target, query, args))
       end
 
       no_is    = name.to_s.sub(/^is_/, '')
@@ -89,8 +81,7 @@ module Covenant
 
       if target.respond_to?(is_query)
         return test(target.send(is_query, *args),
-                    "#{target.inspect} must be #{no_is} #{argl}",
-                    "#{target.inspect} must not be #{no_is} #{argl}")
+                    ErrorMessage.new(target, is_query, args))
       end
 
       super
@@ -109,24 +100,55 @@ module Covenant
         ::Kernel.raise AssertionFailed
       end
     end
+
+    class NullErrorMessage
+      def for_assertion; end
+      def for_denial; end
+    end
+
+    class ErrorMessage
+      attr_reader :target, :message, :args
+
+      def initialize(target, message, args)
+        @target  = target
+        @message = message
+        @args    = args
+      end
+
+      def for_assertion
+        error_message('should be true')
+      end
+
+      def for_denial
+        error_message('should be false')
+      end
+
+      private
+
+      def error_message(expected)
+        argl = args.map(&:inspect).join(", ")
+
+        "#{target.inspect}.#{message} #{argl} #{expected}"
+      end
+    end
   end
 
   class Assertion < Statement
-    def test(condition, message = nil, _ = nil)
+    def test(condition, error_message = NullErrorMessage.new)
       if condition
         target
       else
-        raise_error message
+        raise_error error_message.for_assertion
       end
     end
   end
 
   class Denial < Statement
-    def test(condition, _ = nil, message = nil)
+    def test(condition, error_message = NullErrorMessage.new)
       if ! condition
         target
       else
-        raise_error message
+        raise_error error_message.for_denial
       end
     end
   end
