@@ -41,7 +41,7 @@ module Covenant
     end
   end
 
-  class AssertionFailed < Exception; end
+  class AssertionFailed < StandardError; end
 
   class Assertion < BasicObject
     def initialize(target, message)
