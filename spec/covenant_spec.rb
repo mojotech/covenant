@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Covenant do
   describe Covenant::DSL do
-    include Covenant::DSL
+    Covenant.abide self
 
     describe "#assert" do
       context "with block" do
@@ -28,7 +28,7 @@ describe Covenant do
   end
 
   describe Covenant::Assertion do
-    include Covenant::DSL
+    Covenant.abide self
 
     describe 'assertion' do
       subject(:assertion) { assert('hi') }
