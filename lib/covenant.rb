@@ -31,24 +31,6 @@ module Covenant
     end
 
     alias_method :asserting, :assert
-
-    # Ensures that the condition on target evaluates to a false value.
-    #
-    # @api public
-    #
-    # @param target the target on which to test the condition
-    # @param message the message that will be set if the test fails
-    #
-    # @return the wrapper object you can use to test your assertions
-    def deny(target = self, message = nil)
-      if block_given?
-        Covenant::Denial.new(target, message).test(yield target)
-      else
-        Covenant::Denial.new(target, message)
-      end
-    end
-
-    alias_method :denying, :deny
   end
 
   class AssertionFailed < Exception; end
@@ -143,16 +125,6 @@ module Covenant
         target
       else
         raise_error error_message.for_assertion
-      end
-    end
-  end
-
-  class Denial < Statement
-    def test(condition, error_message = NullErrorMessage.new)
-      if ! condition
-        target
-      else
-        raise_error error_message.for_denial
       end
     end
   end

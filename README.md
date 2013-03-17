@@ -3,7 +3,7 @@
 Covenant is an assertion library for Ruby, designed to be used in your
 production code.
 
-It adds 4 methods to `Object`: `assert`, `asserting`, `deny` and `denying`.
+It adds 2 methods to `Object`: `assert` and `asserting`.
 
 ## Usage
 
@@ -41,15 +41,6 @@ the block.
     do_this.and_that.assert { |o| o > 1 } #=> o
 
 In the last case, `o` is the return value of `#and_that`.
-
-### deny
-
-    deny(obj).is_an Array # Covenant::AssertionFailed: Expected #{obj.inspect} to be false.
-
-In general, favor `assert` over `deny`. **Do not** use `deny` with `!=`. It
-reads really bad:
-
-    deny(obj) != some_other_object # yuck
 
 ## Custom error messages
 
