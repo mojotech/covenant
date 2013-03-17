@@ -7,8 +7,15 @@ It adds 2 methods to `Object`: `assert` and `asserting`.
 
 ## Usage
 
-Simply pass a block to `#assert`. The block's result must be truthy, otherwise
-an exception will be raised.
+If you want to make the DSL available globally, simply call
+`Covenant.abide`. Otherwise, call `Covenant.abide <target obj>`. You can also
+register the DSL methods with different names, if you don't like to use the
+names provided. For example, if you want to make the DSL available globally, but
+you'd rather use `uphold` and `upholding` as the method names, call
+`Covenant.abide Object, [:uphold, :upholding]`.
+
+To enforce some condition, pass a block to `#assert`. The block's result must be
+truthy, otherwise an exception will be raised.
 
     assert { [].is_a?(Array) } # yay
     assert { 1.is_a?(String) } # oh, noes!
