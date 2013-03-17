@@ -16,5 +16,6 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.rubyforge_project = '[none]'
 
+  s.add_dependency 'sourcify', '~> 0.6.0.pre'
   s.add_development_dependency 'rspec', '>= 2.11'
 end

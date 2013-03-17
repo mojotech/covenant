@@ -5,74 +5,43 @@ describe Covenant do
     Covenant.abide self
 
     describe "#assert" do
-      context "with block" do
-        it "passes if the block expression evaluates to true" do
-          expect { assert { true } }.not_to raise_error
-        end
+      it "passes if the block expression evaluates to true" do
+        expect { assert { true } }.not_to raise_error
+      end
 
-        it "fails if the block expression evaluates to false" do
-          expect { assert { false } }.to raise_error(Covenant::AssertionFailed)
-        end
+      it "fails if the block expression evaluates to false" do
+        expect { assert { false } }.to raise_error(Covenant::AssertionFailed)
+      end
 
-        it "yields the receiver" do
-          Covenant.abide s = "hi"
+      it "yields the receiver" do
+        Covenant.abide s = "hi"
 
-          expect { s.assert { |r| r == "hi" } }.not_to raise_error
-        end
+        expect { s.assert { |r| r == "hi" } }.not_to raise_error
+      end
 
-        it "returns the receiver" do
-          expect(assert { true }).to be self
-        end
+      it "returns the receiver" do
+        expect(assert { true }).to be self
       end
     end
   end
 
-  describe Covenant::Assertion do
-    Covenant.abide self
+  describe Covenant::ErrorMessage do
+    subject(:message) {
+      a = 1
+      b = 2
+      c = "invisible"
 
-    describe 'assertion' do
-      subject(:assertion) { assert('hi') }
+      Covenant::ErrorMessage.new(->{ a + b && "literal" }).to_s
+    }
 
-      it "passes if the receiver answers the bare query with a true value" do
-        expect { assertion =~ /hi/ }.not_to raise_error
-      end
+    it "shows the block's source" do
+      expect(message).to match(/proc \{.+\}/)
+    end
 
-      it "passes if the receiver answers == with a true value" do
-        expect { assertion == 'hi' }.not_to raise_error
-      end
-
-      it "passes if the receiver answers != with a true value" do
-        expect { assertion != 'yo' }.not_to raise_error
-      end
-
-      it "passes if the receiver answers the query with a true value" do
-        expect { assertion.start_with('h') }.not_to raise_error
-      end
-
-      it "passes if the receiver answers the 'is' query with a true value" do
-        expect { assertion.is_ascii_only }.not_to raise_error
-      end
-
-      it "fails if the receiver answers the bare query with a false value" do
-        expect { assertion =~ /yo/ }.to raise_error(Covenant::AssertionFailed)
-      end
-
-      it "fails if the receiver answers == with a false value" do
-        expect { assertion == 'yo' }.to raise_error(Covenant::AssertionFailed)
-      end
-
-      it "fails if the receiver answers != with a false value" do
-        expect { assertion != 'hi' }.to raise_error(Covenant::AssertionFailed)
-      end
-
-      it "fails if the receiver answers the query with a false value" do
-        expect { assertion.end_with('a') }.
-         to raise_error(Covenant::AssertionFailed)
-      end
-
-      it "fails if the receiver answers the 'is' query with a false value" do
-        expect { assertion.is_empty }.to raise_error(Covenant::AssertionFailed)
-      end
+    it "shows relevant variable values" do
+      expect(message).to match(/a = 1/)
+      expect(message).to match(/b = 2/)
+      expect(message).not_to match(/c = "invisible"/)
     end
   end
 end

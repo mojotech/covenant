@@ -1,3 +1,5 @@
+require 'sourcify'
+
 module Covenant
   # Adds the Covenant DSL to base.
   #
@@ -32,119 +34,57 @@ module Covenant
     # @param [#to_s] message the message that will be set if the test fails
     #
     # @return the wrapper object you can use to test your assertions
-    def _assert(target = self, message = nil)
-      if block_given?
-        Covenant::Assertion.new(target, message).test(yield target)
-      else
-        Covenant::Assertion.new(target, message)
-      end
+    def _assert(&block)
+      raise ArgumentError, "no block given" unless block_given?
+
+      tap { yield self or raise AssertionFailed, ErrorMessage.new(block) }
     end
   end
 
   class AssertionFailed < StandardError; end
 
-  class Assertion < BasicObject
-    def initialize(target, message)
-      @target  = target
-      @message = message
+  class ErrorMessage
+    def initialize(block)
+      @block = block
     end
 
-    def ==(other)
-      test(target == other, ErrorMessage.new(target, :==, [other]))
+    def to_s
+      "block did not return true:\n\n#{source_block}\n\n#{variable_block}"
     end
 
-    def !=(other)
-      test(target != other, ErrorMessage.new(target, :!=, [other]))
+    private
+
+    attr_reader :block
+
+    def indent(str)
+      "  " + str.gsub(/\n/, "\n  ").strip
     end
 
-    def method_missing(name, *args)
-      if target.respond_to?(name)
-        return test(target.send(name, *args),
-                    ErrorMessage.new(target, name, args))
-      end
-
-      query = "#{name}?"
-
-      if target.respond_to?(query)
-        return test(target.send(query, *args),
-                    ErrorMessage.new(target, query, args))
-      end
-
-      no_is    = name.to_s.sub(/^is_/, '')
-      is_query = "#{no_is}?"
-
-      if target.respond_to?(is_query)
-        return test(target.send(is_query, *args),
-                    ErrorMessage.new(target, is_query, args))
-      end
-
-      super
+    def source
+      block.to_source
     end
 
-    def test(condition, error_message = NullErrorMessage.new)
-      if condition
-        target
-      else
-        raise_error error_message.for_assertion
-      end
+    def source_block
+      "Source:\n\n#{indent(source)}"
     end
 
-    protected
+    def variable_block
+      b = variables.
+       inject("") { |a, (var, val)|
+        a << "#{var} = #{val.inspect}\n"
+      }
 
-    attr_reader :target, :message
-
-    def raise_error(message)
-      msg = self.message || message
-
-      if msg
-        ::Kernel.raise AssertionFailed, msg
-      else
-        ::Kernel.raise AssertionFailed
-      end
+      "Variables:\n\n" + indent(b)
     end
 
-    class NullErrorMessage
-      def for_assertion; end
-      def for_denial; end
-    end
+    def variables
+      s  = source
+      b  = block.binding
+      lv = b.eval('local_variables')
 
-    class ErrorMessage
-      attr_reader :target, :message, :args
-
-      def initialize(target, message, args)
-        @target  = target
-        @message = message
-        @args    = args
-      end
-
-      def for_assertion
-        error_message('should be true')
-      end
-
-      def for_denial
-        error_message('should be false')
-      end
-
-      private
-
-      def error_message(expected)
-        argl = args.map(&:inspect).join(", ")
-
-        "#{target.inspect}.#{message} #{argl} #{expected}"
-      end
+      lv.
+       select { |v| s =~ /\b#{v}\b/ }.
+       map    { |v| [v, b.eval(v.to_s)] }
     end
   end
 end
-
-=begin
-
-require 'benchmark'
-
-Covenant.abide self
-
-Benchmark.bm do |x|
-  x.report { 1_000_000.times { assert('aaa').start_with 'a' } }
-  x.report { 1_000_000.times { 'aaa'.start_with? 'a' } }
-end
-
-=end
