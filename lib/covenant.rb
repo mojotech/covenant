@@ -35,7 +35,7 @@ module Covenant
 
   class AssertionFailed < Exception; end
 
-  class Statement < BasicObject
+  class Assertion < BasicObject
     def initialize(target, message)
       @target  = target
       @message = message
@@ -71,6 +71,14 @@ module Covenant
       end
 
       super
+    end
+
+    def test(condition, error_message = NullErrorMessage.new)
+      if condition
+        target
+      else
+        raise_error error_message.for_assertion
+      end
     end
 
     protected
@@ -115,16 +123,6 @@ module Covenant
         argl = args.map(&:inspect).join(", ")
 
         "#{target.inspect}.#{message} #{argl} #{expected}"
-      end
-    end
-  end
-
-  class Assertion < Statement
-    def test(condition, error_message = NullErrorMessage.new)
-      if condition
-        target
-      else
-        raise_error error_message.for_assertion
       end
     end
   end

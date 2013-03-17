@@ -27,7 +27,7 @@ describe Covenant do
     end
   end
 
-  describe Covenant::Statement do
+  describe Covenant::Assertion do
     include Covenant::DSL
 
     describe 'assertion' do
