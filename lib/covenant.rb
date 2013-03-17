@@ -5,11 +5,10 @@ module Covenant
   #
   # @param base where to add the Covenant DSL
   def self.abide(base = Object)
-    case base
-    when Class
-      base.send :include, Covenant::DSL
-    else
-      base.extend Covenant::DSL
+    target = Class === base ? base : base.singleton_class
+
+    target.class_eval do
+      include Covenant::DSL
     end
   end
 
