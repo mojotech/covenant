@@ -4,11 +4,22 @@ module Covenant
   # @api public
   #
   # @param base where to add the Covenant DSL
-  def self.abide(base = Object)
+  def self.abide(base = Object, as = [:assert, :asserting])
     target = Class === base ? base : base.singleton_class
 
     target.class_eval do
       include Covenant::DSL
+
+      case as
+      when Array
+        as.each do |a|
+          alias_method a, :_assert
+        end
+      when Symbol, String
+        alias_method as, :_assert
+      else
+        raise ArgumentError, "cannot register `#{as.inspect}` as method names"
+      end
     end
   end
 
@@ -21,15 +32,13 @@ module Covenant
     # @param [#to_s] message the message that will be set if the test fails
     #
     # @return the wrapper object you can use to test your assertions
-    def assert(target = self, message = nil)
+    def _assert(target = self, message = nil)
       if block_given?
         Covenant::Assertion.new(target, message).test(yield target)
       else
         Covenant::Assertion.new(target, message)
       end
     end
-
-    alias_method :asserting, :assert
   end
 
   class AssertionFailed < Exception; end
